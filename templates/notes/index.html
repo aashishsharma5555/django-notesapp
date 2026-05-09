@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📝 My Notes</h1>
+            <button class="btn btn-primary" id="newNoteBtn">+ New Note</button>
+        </header>
+
+        <main class="main-content">
+            <!-- Notes List Section -->
+            <section class="notes-list-section">
+                <div class="notes-grid" id="notesGrid">
+                    <!-- Notes will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Editor Section -->
+            <section class="editor-section" id="editorSection" style="display: none;">
+                <div class="editor-header">
+                    <button class="btn-back" id="backBtn">← Back</button>
+                    <div class="editor-actions">
+                        <button class="btn btn-success" id="saveBtn">💾 Save</button>
+                        <button class="btn btn-danger" id="deleteBtn">🗑️ Delete</button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <input type="text" id="noteTitleInput" class="note-title-input" placeholder="Note Title...">
+                    <textarea id="noteContentInput" class="note-content-input" placeholder="Type your note here..."></textarea>
+                    <div class="editor-info" id="editorInfo"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Confirmation -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <p id="modalMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" id="confirmBtn">Delete</button>
+                <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
