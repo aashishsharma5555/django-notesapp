@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Notes App</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h1 class="auth-title">Create your account</h1>
+            <p class="auth-subtitle">Start your own private notes workspace.</p>
+
+            {% if form.errors %}
+                <div class="error-box">Please correct the highlighted fields and try again.</div>
+            {% endif %}
+
+            <form class="auth-form auth-help" method="post" action="{% url 'signup' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="auth-btn auth-btn-primary" type="submit">Create account</button>
+            </form>
+
+            <p class="auth-note">
+                Already have an account? <a href="{% url 'login' %}">Sign in</a>
+            </p>
+        </section>
+    </main>
+</body>
+</html>

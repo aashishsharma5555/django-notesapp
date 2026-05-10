@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Note
+
 
 def index(request):
     """Display the main notes page"""
@@ -17,7 +17,6 @@ def get_notes(request):
     return JsonResponse(list(notes), safe=False)
 
 @require_http_methods(["POST"])
-@csrf_exempt
 def create_note(request):
     """Create a new note"""
     try:
@@ -39,7 +38,6 @@ def create_note(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 @require_http_methods(["POST"])
-@csrf_exempt
 def update_note(request, note_id):
     """Update an existing note"""
     try:
@@ -65,7 +63,6 @@ def update_note(request, note_id):
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 @require_http_methods(["DELETE"])
-@csrf_exempt
 def delete_note(request, note_id):
     """Delete a note"""
     try:

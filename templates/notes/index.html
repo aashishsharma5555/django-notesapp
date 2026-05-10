@@ -10,8 +10,14 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>📝 My Notes</h1>
-            <button class="btn btn-primary" id="newNoteBtn">+ New Note</button>
+            <div class="header-left">
+                <button class="btn btn-primary" id="newNoteBtn">+ New Note</button>
+            </div>
+            <div class="header-right">
+                <p class="eyebrow">Your personal note studio</p>
+                <h1>Notes that move with your flow</h1>
+                <p class="header-subtitle">Organized in a responsive grid, with the newest note always first.</p>
+            </div>
         </header>
 
         <main class="main-content">
@@ -21,6 +27,7 @@
                     <!-- Notes will be dynamically loaded here -->
                 </div>
             </section>
+            <form style="display:none;">{% csrf_token %}</form>
 
             <!-- Editor Section -->
             <section class="editor-section" id="editorSection" style="display: none;">
@@ -28,7 +35,6 @@
                     <button class="btn-back" id="backBtn">← Back</button>
                     <div class="editor-actions">
                         <button class="btn btn-success" id="saveBtn">💾 Save</button>
-                        <button class="btn btn-danger" id="deleteBtn">🗑️ Delete</button>
                     </div>
                 </div>
                 <div class="editor-container">

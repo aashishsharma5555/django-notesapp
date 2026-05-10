@@ -7,6 +7,19 @@ class NotesApp {
         this.init();
     }
 
+    getCSRFToken() {
+        const name = 'csrftoken=';
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const cookies = decodedCookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return '';
+    }
+
     init() {
         this.cacheElements();
         this.attachEventListeners();
@@ -21,7 +34,6 @@ class NotesApp {
         this.noteTitleInput = document.getElementById('noteTitleInput');
         this.noteContentInput = document.getElementById('noteContentInput');
         this.saveBtn = document.getElementById('saveBtn');
-        this.deleteBtn = document.getElementById('deleteBtn');
         this.backBtn = document.getElementById('backBtn');
         this.confirmModal = document.getElementById('confirmModal');
         this.modalMessage = document.getElementById('modalMessage');
@@ -33,7 +45,6 @@ class NotesApp {
     attachEventListeners() {
         this.newNoteBtn.addEventListener('click', () => this.createNewNote());
         this.saveBtn.addEventListener('click', () => this.saveNote());
-        this.deleteBtn.addEventListener('click', () => this.showDeleteConfirm());
         this.backBtn.addEventListener('click', () => this.backToList());
         this.confirmBtn.addEventListener('click', () => this.confirmDelete());
         this.cancelBtn.addEventListener('click', () => this.closeModal());
@@ -78,7 +89,13 @@ class NotesApp {
             return;
         }
 
-        this.notes.forEach(note => {
+        const sortedNotes = [...this.notes].sort((a, b) => {
+            const dateA = new Date(a.updated_at || a.created_at || 0);
+            const dateB = new Date(b.updated_at || b.created_at || 0);
+            return dateB - dateA;
+        });
+
+        sortedNotes.forEach(note => {
             const noteCard = this.createNoteCard(note);
             this.notesGrid.appendChild(noteCard);
         });
@@ -94,12 +111,23 @@ class NotesApp {
         const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
 
         card.innerHTML = `
-            <h3>${this.escapeHtml(note.title)}</h3>
+            <div class="note-card-header">
+                <h3>${this.escapeHtml(note.title)}</h3>
+                <button class="note-delete-btn" data-note-id="${note.id}" aria-label="Delete note">×</button>
+            </div>
             <p>${this.escapeHtml(note.content)}</p>
-            <div class="date">${formattedDate}</div>
+            <div class="note-footer">
+                <span class="date">${formattedDate}</span>
+                <span class="note-badge">Quick note</span>
+            </div>
         `;
 
         card.addEventListener('click', () => this.editNote(note.id));
+        card.querySelector('.note-delete-btn').addEventListener('click', (event) => {
+            event.stopPropagation();
+            this.currentNoteId = note.id;
+            this.showDeleteConfirm();
+        });
         return card;
     }
 
@@ -110,6 +138,7 @@ class NotesApp {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
                 },
                 body: JSON.stringify({
                     title: 'Untitled Note',
@@ -159,6 +188,7 @@ class NotesApp {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
                 },
                 body: JSON.stringify({
                     title: this.noteTitleInput.value || 'Untitled Note',
@@ -202,6 +232,7 @@ class NotesApp {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
                 }
             });
 
